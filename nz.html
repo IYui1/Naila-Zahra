@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>haii my little girl ❤️</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #ff758c;
+      --secondary: #ff7eb3;
+      --bg-gradient: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 50%, #e2afff 100%);
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --text-main: #4a3e3d;
+      --discord-color: #5865F2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    /* Floating Particles Background */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Music Toggle Button */
+    .music-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* SCREEN 1: ENVELOPE ANIMATION */
+    .envelope-screen {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.8s ease-in-out;
+    }
+
+    .envelope-screen.hidden {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 280px;
+      height: 190px;
+      background: #ff85a1;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 15px 35px rgba(255, 117, 140, 0.4);
+      cursor: pointer;
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translateY(-5px);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 140px solid transparent;
+      border-right: 140px solid transparent;
+      border-top: 110px solid #ff6b8b;
+      transform-origin: top;
+      transition: transform 0.6s ease;
+      z-index: 4;
+    }
+
+    .envelope-pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 140px solid #ffa6c1;
+      border-right: 140px solid #ffa6c1;
+      border-bottom: 95px solid #ff85a1;
+      border-radius: 0 0 15px 15px;
+      z-index: 3;
+    }
+
+    .letter-preview {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      right: 20px;
+      height: 140px;
+      background: #fff;
+      border-radius: 8px;
+      z-index: 2;
+      transition: transform 0.6s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .letter-preview p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 22px;
+      color: var(--primary);
+    }
+
+    .heart-seal {
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45px;
+      height: 45px;
+      background: #ff477e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      z-index: 5;
+      box-shadow: 0 4px 10px rgba(255, 71, 126, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-wrapper.open .letter-preview {
+      transform: translateY(-60px);
+    }
+
+    .open-instructions {
+      font-family: 'Dancing Script', cursive;
+      font-size: 26px;
+      color: #9d4edf;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    /* SCREEN 2: MAIN CARD CONTENT */
+    .card-screen {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 520px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 35px 25px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card-screen.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    .header-title h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 38px;
+      color: #ff477e;
+      margin-bottom: 5px;
+    }
+
+    .header-title p {
+      font-size: 14px;
+      color: #7a6b69;
+      margin-bottom: 25px;
+    }
+
+    /* Polaroid Photo & Video Gallery */
+    .polaroid-gallery {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .polaroid {
+      background: #fff;
+      padding: 10px 10px 15px 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      width: 140px;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .polaroid:nth-child(1) { transform: rotate(-4deg); }
+    .polaroid:nth-child(2) { transform: rotate(3deg); }
+    .polaroid:nth-child(3) { transform: rotate(-2deg); }
+
+    .polaroid:hover {
+      transform: scale(1.15) rotate(0deg) !important;
+      z-index: 20;
+    }
+
+    /* Support for both <img> and <video> inside polaroid */
+    .polaroid img,
+    .polaroid video {
+      width: 100%;
+      height: 125px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .polaroid .caption {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: #555;
+    }
+
+    /* Small expand icon shown on hover */
+    .polaroid .expand-hint {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .polaroid:hover .expand-hint {
+      opacity: 1;
+    }
+
+    /* Tape effect on Polaroid */
+    .tape {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 15px;
+      background: rgba(255, 255, 255, 0.75);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      z-index: 2;
+    }
+
+    /* Romantic Message Body */
+    .romantic-message {
+      background: rgba(255, 255, 255, 0.65);
+      padding: 18px;
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #4a3e3d;
+      margin-bottom: 25px;
+    }
+
+    /* Feature Highlights */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .feature-item {
+      background: #fff;
+      padding: 12px 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    .feature-item i {
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .feature-item p {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    /* Discord CTA Button */
+    .btn-discord {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: var(--discord-color);
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 0;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-discord:hover {
+      background: #4752C4;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(88, 101, 242, 0.5);
+    }
+
+    /* LIGHTBOX (FULLSCREEN VIEWER) */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(20, 10, 20, 0.92);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 16px 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-height: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .lightbox-content img,
+    .lightbox-content video {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+      background: #000;
+      transform: scale(0.92);
+      transition: transform 0.35s ease;
+    }
+
+    .lightbox.active .lightbox-content img,
+    .lightbox.active .lightbox-content video {
+      transform: scale(1);
+    }
+
+    .lightbox-caption {
+      margin-top: 14px;
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      color: #ffd1dc;
+      text-align: center;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .lightbox-close:hover {
+      background: #ff477e;
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 480px) {
+      .card-screen { padding: 25px 18px; }
+      .polaroid { width: 110px; }
+      .polaroid img, .polaroid video { height: 100px; }
+      .header-title h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Hearts Background Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Audio Background Player -->
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Toggle Music Button -->
+  <button class="music-btn" id="music-toggle" title="Play/Pause Music">
+    <i class="fas fa-music"></i>
+  </button>
+
+  <!-- STEP 1: ENVELOPE SCREEN -->
+  <div class="envelope-screen" id="envelopeScreen">
+    <div class="envelope-wrapper" id="envelope">
+      <div class="envelope-flap"></div>
+      <div class="letter-preview">
+        <p>You have a special letter...</p>
+      </div>
+      <div class="envelope-pocket"></div>
+      <div class="heart-seal"><i class="fas fa-heart"></i></div>
+    </div>
+    <div class="open-instructions">klik pleaseee ✨</div>
+  </div>
+
+  <!-- STEP 2: ROMANTIC CARD SCREEN -->
+  <div class="card-screen" id="cardScreen">
+    <div class="header-title">
+      <h1>Special Invitation for You ❤️</h1>
+      <p>hallooo sayangg aku bikin ini biar kamu tau serunya main DC bareng lagi</p>
+    </div>
+
+    <!-- POLAROID GALLERY (KLIK UNTUK FULLSCREEN) -->
+    <div class="polaroid-gallery">
+
+      <!-- FOTO -->
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="expand-hint"><i class="fas fa-expand"></i></div>
+        <img src="foto2.jpeg" alt="Foto 1">
+        <div class="caption">Sweet Moments</div>
+      </div>
+
+      <!-- VIDEO (Thumbnail autoplay & loop & muted, klik untuk fullscreen + suara) -->
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="expand-hint"><i class="fas fa-expand"></i></div>
+        <video autoplay loop muted playsinline>
+          <source src="video.mp4" type="video/mp4">
+          Browser tidak mendukung video.
+        </video>
+        <div class="caption">Our Video Clips</div>
+      </div>
+
+      <!-- FOTO LAIN -->
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="expand-hint"><i class="fas fa-expand"></i></div>
+        <img src="foto1.png" alt="Foto 3">
+        <div class="caption">Just You & Me</div>
+      </div>
+
+    </div>
+
+    <!-- Romantic Message Text -->
+    <div class="romantic-message">
+      emang nya ngga kangen gitu sama akuu, sleep call setiap hari, mengobrol, nonton bareng, dengerin lagu bareng, siniii sayangg masuk lagii yuu ke DC nyaa biar tiap malem kita bisa ngobrol di dc lagii meski ga harus selalu ngobrol sihh, tapi atleast kehadiran kamu buat aku menyenangkan sayang, meski di DC cuman diem misal kamu lagi ngobrol sama temen kamu, maupun aku, tapikann seruu tetep soalnyaa ada kamu di hari hari akunya✨
+    </div>
+
+    <!-- Feature Highlights -->
+    <div class="features-grid">
+      <div class="feature-item">
+        <i class="fas fa-bed"></i>
+        <p>Sleep Call Dabest</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-film"></i>
+        <p>Movie Night</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-gamepad"></i>
+        <p>Cozy Mabar</p>
+      </div>
+    </div>
+
+    <!-- Join Discord Button -->
+    <button class="btn-discord" id="joinBtn">
+      <i class="fab fa-discord"></i>
+      Join Our Server sayaang ❤️
+    </button>
+  </div>
+
+  <!-- LIGHTBOX: tampilan fullscreen foto / video -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" title="Tutup">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <script>
+    // --- GANTI LINK DISCORD INI DENGAN LINK INVITE SERVER ANDA ---
+    const DISCORD_INVITE_URL = "https://discord.gg/ufr7P3CmB";
+
+    // Elements
+    const envelope = document.getElementById('envelope');
+    const envelopeScreen = document.getElementById('envelopeScreen');
+    const cardScreen = document.getElementById('cardScreen');
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    const joinBtn = document.getElementById('joinBtn');
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxContent = document.getElementById('lightboxContent');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    // Envelope Click Event
+    envelope.addEventListener('click', () => {
+      envelope.classList.add('open');
+
+      // Try playing music & video elements
+      bgMusic.play().then(() => {
+        musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+      }).catch(() => {});
+
+      // Auto play thumbnail videos
+      document.querySelectorAll('.polaroid video').forEach(vid => vid.play().catch(() => {}));
+
+      setTimeout(() => {
+        envelopeScreen.classList.add('hidden');
+        cardScreen.classList.add('visible');
+        triggerHeartBurst();
+      }, 900);
+    });
+
+    // Music Toggle Button
+    musicToggle.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+      } else {
+        bgMusic.pause();
+        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+      }
+    });
+
+    // --- LIGHTBOX LOGIC ---
+    let musicWasPlaying = false;
+
+    function openLightbox(mediaEl, captionText) {
+      lightboxContent.innerHTML = '';
+      lightboxCaption.textContent = captionText || '';
+
+      if (mediaEl.tagName === 'VIDEO') {
+        // Pause lagu latar supaya suara video terdengar jelas
+        musicWasPlaying = !bgMusic.paused;
+        if (musicWasPlaying) {
+          bgMusic.pause();
+          musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        }
+
+        const sourceEl = mediaEl.querySelector('source');
+        const v = document.createElement('video');
+        v.src = (sourceEl && sourceEl.src) ? sourceEl.src : mediaEl.currentSrc;
+        v.controls = true;
+        v.autoplay = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.muted = false; // suara aktif
+        v.volume = 1;
+        lightboxContent.appendChild(v);
+
+        // Lanjutkan dari posisi thumbnail
+        v.addEventListener('loadedmetadata', () => {
+          try { v.currentTime = mediaEl.currentTime || 0; } catch (e) {}
+        }, { once: true });
+
+        v.play().catch(() => {});
+      } else {
+        const img = document.createElement('img');
+        img.src = mediaEl.src;
+        img.alt = mediaEl.alt || '';
+        lightboxContent.appendChild(img);
+      }
+
+      lightbox.classList.add('active');
+      document.body.classList.add('no-scroll');
+    }
+
+    function closeLightbox() {
+      if (!lightbox.classList.contains('active')) return;
+
+      const vid = lightboxContent.querySelector('video');
+      if (vid) {
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+      }
+
+      lightbox.classList.remove('active');
+      document.body.classList.remove('no-scroll');
+
+      // Setelah video ditutup, lanjutkan lagu latar jika tadi menyala
+      if (musicWasPlaying) {
+        bgMusic.play().then(() => {
+          musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }).catch(() => {});
+        musicWasPlaying = false;
+      }
+
+      setTimeout(() => { lightboxContent.innerHTML = ''; }, 350);
+    }
+
+    document.querySelectorAll('.polaroid').forEach(polaroid => {
+      polaroid.addEventListener('click', () => {
+        const media = polaroid.querySelector('img, video');
+        const caption = polaroid.querySelector('.caption');
+        if (media) openLightbox(media, caption ? caption.textContent : '');
+      });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    // Klik area gelap di luar media untuk menutup
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target === lightboxContent) closeLightbox();
+    });
+
+    // Tombol Escape untuk menutup
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Join Button Click Event
+    joinBtn.addEventListener('click', () => {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff758c', '#ff7eb3', '#5865F2', '#ffffff']
+      });
+
+      setTimeout(() => {
+        window.open(DISCORD_INVITE_URL, '_blank');
+      }, 1000);
+    });
+
+    // Heart Burst Effect
+    function triggerHeartBurst() {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 }
+      });
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 }
+      });
+    }
+
+    // --- Floating Hearts Background Animation ---
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const hearts = [];
+    const heartCount = 20;
+
+    for (let i = 0; i < heartCount; i++) {
+      hearts.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 12 + 8,
+        speedY: Math.random() * 1 + 0.5,
+        opacity: Math.random() * 0.5 + 0.3
+      });
+    }
+
+    function drawHeart(x, y, size, opacity) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = '#ff758c';
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.bezierCurveTo(x - size / 2, y - size / 2, x - size, y + size / 3, x, y + size);
+      ctx.bezierCurveTo(x + size, y + size / 3, x + size / 2, y - size / 2, x, y);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hearts.forEach(h => {
+        h.y -= h.speedY;
+        if (h.y < -20) {
+          h.y = canvas.height + 20;
+          h.x = Math.random() * canvas.width;
+        }
+        drawHeart(h.x, h.y, h.size, h.opacity);
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+</body>
+</html>
